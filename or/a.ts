@@ -10,20 +10,32 @@ if (!OR_API_KEY) throw new Error('OPENROUTER_API_KEY is not set');
 const client = new OpenRouter({ apiKey: OR_API_KEY });
 
 const weatherTool = tool({
-  name: 'get_weather',
-  description: 'Get the current weather for a location',
-  inputSchema: z.object({ location: z.string() }),
-  execute: async ({ location }) => ({
-    temperature: 72,
-    condition: 'sunny',
-    location,
-  }),
+    name: 'get_weather',
+    description: 'Get the current weather for a location',
+    inputSchema: z.object({ location: z.string() }),
+    execute: async ({ location }) => {
+        console.log("location", location)
+
+        if (location.toLocaleLowerCase() === "delhi") {
+            return {
+                temperature: 9,
+                condition: 'winter',
+                location,
+            }
+        }
+
+        return {
+            temperature: 72,
+            condition: 'sunny',
+            location,
+        }
+    },
 });
 
 const result = callModel(client, {
-  model: 'nvidia/nemotron-3-ultra-550b-a55b:free',
-  input: 'What is the weather in San Francisco?',
-  tools: [weatherTool] as const,
+    model: 'nvidia/nemotron-3-ultra-550b-a55b:free',
+    input: 'What is the waether in delhi?',
+    tools: [weatherTool] as const,
 });
 
 // Get the final text response (tools are auto-executed)
