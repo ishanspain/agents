@@ -12,11 +12,11 @@ const client = new OpenRouter({ apiKey: OR_API_KEY });
 const weatherTool = tool({
     name: 'get_weather',
     description: 'Get the current weather for a location',
-    inputSchema: z.object({ location: z.string() }),
+    inputSchema: z.object({ location: z.string().describe('City name in lowercase') }),
     execute: async ({ location }) => {
         console.log("location", location)
 
-        if (location.toLocaleLowerCase() === "delhi") {
+        if (location === "delhi") {
             return {
                 temperature: 9,
                 condition: 'winter',
@@ -24,10 +24,12 @@ const weatherTool = tool({
             }
         }
 
-        return {
-            temperature: 72,
-            condition: 'sunny',
-            location,
+        if (location.toLocaleLowerCase() === "america") {
+            return {
+                temperature: 72,
+                condition: 'sunny',
+                location,
+            }
         }
     },
 });
